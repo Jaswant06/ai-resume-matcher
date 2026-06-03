@@ -36,6 +36,32 @@ Python · Sentence-Transformers · Hugging Face · PyTorch · Gradio · cosine s
 pip install -r requirements.txt
 python app.py            # launches the web UI at http://127.0.0.1:7860
 ```
+## Use the REST API
+
+The matcher is also exposed as a FastAPI REST endpoint, so other apps can call it programmatically.
+
+```bash
+pip install -r requirements.txt
+uvicorn api:app --reload   # interactive docs at http://127.0.0.1:8000/docs
+```
+
+`POST /match` with a JSON body:
+
+```json
+{ "resume": "your resume text", "job": "the job description" }
+```
+
+returns a structured match report:
+
+```json
+{
+  "overall": 0.56,
+  "covered": [
+    { "requirement": "...", "score": 0.64, "best_match": "..." }
+  ],
+  "gaps": []
+}
+```
 
 Run the tests:
 
@@ -49,6 +75,7 @@ pytest
 ```text
 ai-resume-matcher/
 ├── app.py                  # Gradio web UI (entry point)
+├── api.py                 # FastAPI REST API (programmatic access)
 ├── src/
 │   ├── __init__.py         # public API: analyze, format_report
 │   ├── matcher.py          # core engine: chunk -> embed -> match -> score

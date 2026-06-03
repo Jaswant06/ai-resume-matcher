@@ -11,7 +11,28 @@ class MatchRequest(BaseModel):
     job: str
 
 
-@app.post("/match")
+class RequirementOut(BaseModel):
+    requirement: str
+    score: float
+    best_match: str
+
+
+class MatchResponse(BaseModel):
+    overall: float
+    covered: list[RequirementOut]
+    gaps: list[RequirementOut]
+
+@app.post("/match", response_model=MatchResponse)
 def match(req: MatchRequest):
     result = analyze(req.resume, req.job)
-    return format_report(result)
+    return MatchResponse(
+        overall=result.overall,
+        covered=[
+            RequirementOut(requirement=m.requirement, score=m.score, best_match=m.best_match)
+            for m in result.covered
+        ],
+        gaps=[
+            RequirementOut(requirement=m.requirement, score=m.score, best_match=m.best_match)
+            for m in result.gaps
+        ],
+    )
