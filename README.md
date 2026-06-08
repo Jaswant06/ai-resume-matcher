@@ -7,6 +7,8 @@ so you know what to fix before applying.
 
 > Paste a resume + a job posting -> get a **match score** and a **skill-gap list**.
 
+**Live demo:** https://huggingface.co/spaces/JaswantDev/ai-resume-matcher
+
 ## Why semantic matching (and not keywords)
 
 Keyword matching misses meaning. "Built NLP models" and "experience with natural
