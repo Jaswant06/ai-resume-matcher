@@ -28,7 +28,7 @@ word can still score 0.84 similarity.
 
 ## Tech stack
 
-Python · Sentence-Transformers · Hugging Face · PyTorch · Gradio · cosine similarity
+Python · Sentence-Transformers · Hugging Face · PyTorch · FastAPI · Docker · Gradio · cosine similarity
 
 ## Run it locally
 
@@ -63,10 +63,21 @@ returns a structured match report:
 }
 ```
 
-Run the tests:
+## Run with Docker
+
+The API is containerized, so it runs anywhere Docker does, no Python setup needed.
 
 ```bash
-pip install pytest
+docker build -t resume-matcher-api .
+docker run -p 8000:8000 resume-matcher-api   # docs at http://localhost:8000/docs
+```
+
+Dependencies are pinned in `requirements.txt`, so the image is reproducible.
+
+## Run the tests
+
+```bash
+pip install -r requirements-dev.txt
 pytest
 ```
 
@@ -74,15 +85,19 @@ pytest
 
 ```text
 ai-resume-matcher/
-├── app.py                  # Gradio web UI (entry point)
-├── api.py                 # FastAPI REST API (programmatic access)
+├── app.py                  # Gradio web UI (human-facing)
+├── api.py                  # FastAPI REST API (programmatic access)
 ├── src/
 │   ├── __init__.py         # public API: analyze, format_report
 │   ├── matcher.py          # core engine: chunk -> embed -> match -> score
 │   └── report.py           # renders results as a Markdown report
 ├── tests/
-│   └── test_matcher.py     # unit tests for the engine
-├── requirements.txt
+│   ├── test_matcher.py     # unit tests for the engine
+│   └── test_api.py         # API tests (FastAPI TestClient)
+├── Dockerfile              # containerizes the API
+├── .dockerignore
+├── requirements.txt        # runtime dependencies (pinned)
+├── requirements-dev.txt    # + pytest, httpx for tests
 ├── .gitignore
 └── README.md
 ```
